@@ -10,6 +10,7 @@ import cv2, numpy as np
 from graphene import GaussianElimination, Fraction
 import os, sys, fractions
 import copy
+import remgrid
 
 file = r'2540.png'
 image = cv2.imread(file)
@@ -36,16 +37,19 @@ cv2.imshow('res', res)
 x = image
 height = len(x)
 length = len(x[0])
+print('dim', length, height)
 # height = Fraction(len(x))
 # length = Fraction(len(x[0]))
 # graph_height = Fraction(938536, 1000)
 # graph_width = Fraction(31395, 1000)
-graph_height = 938.536
-graph_width = 31.395
+graph_height = 938.536 # 81 , 154
+# graph_width, graph_height = 49.480519480519480519480519480519, 6123.4567901234567901234567901235
+# graph_width, graph_height = 49.480519480519480519480519480519, 6123.4567901234567901234567901235
+graph_width, graph_height = 50, 6432.0987654320987654320987654321
 coords = [[], []]
 xappend = coords[0].append
 yappend = coords[1].append
-print(graph_width/length)
+new = True
 try:
     for j in range(len(x)):
         for i in range(len(x[0])):
@@ -54,6 +58,9 @@ try:
                 x[j][i] = [255, 255, 0]
                 xx = i*graph_width/length
                 yy = graph_height*(height-j)/height
+                if new:
+                    # print(xx, yy)
+                    new = False
                 # if coords[0].__len__() > 10:
                     # raise ValueError
                 if coords[1] and coords[1][-1] == yy: # use the new one instead
@@ -110,14 +117,15 @@ def click_event(event, x, y, flags, params):
 cv2.setMouseCallback('peeves', click_event)
 plt.grid()
 diff = []
-# for i in range(len(coords[0])):
-#     x = coords[0][i]
-#     y = coords[1][i]
-#     # print(x, y, x**2, f'off by {((x**2-y)/x**2)*100} %')
-#     print(x, y, x**2, f'different by {x**2-y}')
-#     diff.append(x**2-y)
+for i in range(len(coords[0])):
+    x = coords[0][i]
+    y = coords[1][i]
+    # print(x, y, x**2, f'off by {((x**2-y)/x**2)*100} %')
+    # print(x, y, x**2, f'different by {x**2-y}')
+    c = remgrid.calc(x)
+    diff.append(abs(100*(c-y)/c))
 zipped_coord = list(zip(coords[0], coords[1]))
-n = 5 # 375/n
+
 def split_float(flt, fraction=False):
     flt_string = str(flt)
     index = flt_string.find('.')

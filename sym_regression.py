@@ -6,9 +6,12 @@ Created on Tue Aug 17 03:26:28 2021
 """
 import time, numpy as np
 from graphene import *
-x_list = [-0.98, 1.00, 2.02, 3.03, 4.00]
-y_list = [2.44, -1.51, -0.47, 2.54, 7.52]
-poly_deg = 2
+# x_list = [-0.98, 1.00, 2.02, 3.03, 4.00]
+# y_list = [2.44, -1.51, -0.47, 2.54, 7.52]
+# poly_deg = 2
+x_list = [2.44, -1.51, -0.47, 2.54, 7.52]
+y_list = [2.44, -1.51, -0.47, 2.54, 7.5]
+poly_deg = 1
 assert len(x_list) == len(y_list)
 
 power_list = [None]*(1+2*poly_deg)

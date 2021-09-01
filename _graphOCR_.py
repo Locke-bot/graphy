@@ -13,8 +13,8 @@ from matplotlib import pyplot as plt
 
 class Graph:
     def __init__(self, filematrix):
-        self.file= filematrix
-        rect, self.threshfile=cv2.threshold(filematrix, 205,225,0)
+        self.file = filematrix
+        rect, self.threshfile = cv2.threshold(filematrix, 205,225,0)
         # cv2.imshow('rr', self.threshfile)
         # cv2.imshow('rr', filematrix)
         # cv2.waitKey()
@@ -84,7 +84,6 @@ class Graph:
     def grid_removal(self):
         return np.array(horizon_erase(vertice_erase(self.segment())), dtype=np.uint8)   
     
-    
     def horizontal_grid_mask(self):
         self.grided_file=[]
         indexcount=-1
@@ -96,7 +95,6 @@ class Graph:
             else:
                 self.grided_file.append(i)
         return(np.array(self.grided_file, dtype= "uint8"))
-    
     
     def vertical_grid_mask(self,filemat):
         self.grided_file=[]
@@ -111,14 +109,11 @@ class Graph:
                 self.grided_file.append(i)
         return(np.transpose(np.array(self.grided_file, dtype= "uint8")))
     
-    
     def create_mask_self(self):
         return self.vertical_grid_mask(self.horizontal_grid_mask())
     
-    
     def copulate(self):
         return cv2.bitwise_and(self.grid_removal(), self.create_mask_self())
-    
     
     def interpolate(self,x, Xinit, Xfin):
         Tlen=Xfin- Xinit
@@ -199,5 +194,3 @@ plt.show()
 print(time.time()-z)
 if cv2.waitKey(0)==27:
     cv2.destroyAllWindows()
-
-            

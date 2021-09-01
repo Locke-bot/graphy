@@ -13,13 +13,13 @@ def fract(x_array):
     for i in range(len(x_array)):
         for j in range(len(x_array[i])):
             x_array[i][j] = Fraction(str(x_array[i][j]))
-            
+       
 def py_fract(x):
     for i in range(len(x)):
         for j in range(len(x[i])):
             x[i][j] = fractions.Fraction(str(x[i][j]))
     return x
-     
+
 def py(thelist, convert=True):
     for i in range(len(thelist)):
         for j in range(len(thelist[0])):

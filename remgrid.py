@@ -1,34 +1,57 @@
-import cv2
+import cv2, os, sys
 import numpy as np
 import matplotlib.pyplot as plt
 from fractions import Fraction
+from decimal import Decimal
+from PIL import Image
+# from untitled8 import calc
+def calc(x):
+    y = x**2
+    # y = 9.1*x-1
+    # y = 9.1*x**4 + 2.15*x**3 + 7.1*x**2 + 7*x - 4 # 2542.png
+    return y
 
-def calc_y(x):
-    return x**2
-    # return 2.4*x**2 + 5*x - 4
+def process_coord(coord): # for PIL image processing
+     # new_tup = (coord[0]-1, coord[3]-1, coord[2]+1, coord[1]+1)
+     # new_tup = (coord[0], coord[3], coord[2], coord[1])
+     new_tup = (coord[0]-1, coord[1]-1, coord[2]+1, coord[3]+5)
+     return new_tup
 
-x = [i for i in np.arange(Fraction(50), step=Fraction(0.5))]
-y = [calc_y(i) for i in x]
-fig = plt.figure(figsize=(30, 30))
-plt.plot(x, y)
-plt.grid()
-plt.savefig('2540.png')
-# plt.scatter(x, y, s=0.5, color='black', label='Phase C')
-# image = cv2.imread('x_square.png')
-# image=cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_LANCZOS4)
-# gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-# n = 100
-# # ret, threshmod = cv2.threshold(gray_image, n, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-# ret, thresh = cv2.threshold(gray_image, n, 255, cv2.THRESH_BINARY_INV)
-# ret, threshsv = cv2.threshold(hsv, n, 255, cv2.THRESH_BINARY)
-# # edges = cv2.Canny(gray_image, 100, 200)
-# # threshx = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
-# # cv2.imshow('thresh_inv & otsu', image)
-# cv2.imshow('threshv', thresh)
-# # cv2.imshow('edge', edges)
-# # cv2.imshow('hedge', cv2.Canny(thresh, 100, 200))
-# # cv2.imshow('edghe', cv2.Canny(threshmod, 100, 200))
-# cv2.imshow('threshsv', threshsv)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+crop = False or 1
+
+if __name__ == '__main__':
+    # x = [i for i in np.arange(Fraction(50), step=Fraction(0.5))]
+    # y = [calc(i) for i in x]
+    # fig = plt.figure(figsize=(15, 10))
+    # plt.plot(x, y)
+    # plt.grid()
+    # # print(list(map(lambda _: float(max(_)), [x, y])))
+    # print(list(map(lambda _: str(Decimal(float(max(_)))), [x, y])))
+    file = r'2542-1.png'
+    # plt.savefig(file)
+
+    if crop:    
+        image = cv2.imread(file)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        lower_blue = np.array([100, 150, 150], dtype="float64")
+        upper_blue = np.array([255, 255, 255], dtype="float64")
+        # Threshold the HSV image to get only blue colors
+        mask = cv2.inRange(hsv, lower_blue, upper_blue)
+        res = cv2.bitwise_and(image, image, mask=mask)
+        
+        x = image
+        tit = []
+        try:
+            for j in range(len(x)):
+                for i in range(len(x[0])):
+                    if res[j][i][0] > 10:
+                        tit.append((i, j))
+        except:
+            raise
+        crop_coord = (min(tit, key=lambda _: _[0])[0], min(tit, key=lambda _: _[1])[1], max(tit, key=lambda _: _[0])[0], max(tit, key=lambda _: _[1])[1])
+        print(crop_coord)
+        juju = Image.open(file)
+        jujucrop = juju.crop(process_coord(crop_coord))
+        # jujucrop = juju.crop((173, 114, 933, 605))
+        jujucrop.show()
+        # jujucrop.save(file)
