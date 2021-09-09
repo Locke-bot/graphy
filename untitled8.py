@@ -15,10 +15,14 @@ def process_coord(coord): # for PIL image processing
      return new_tup
 
 if __name__ == '__main__':
-    x = [i for i in np.arange(Fraction(-5), Fraction(5), step=Fraction(0.00001))]
+    step = Fraction(0.01)
+    x = [i for i in np.arange(Fraction(-5), Fraction(5), step=step)]
     y = [calc(i) for i in x]
-    fig = plt.figure(figsize=(40, 40))
+    fig = plt.figure(figsize=(15, 10))
+    # fig = plt.figure(figsize=(20, 20))
+    # fig = plt.figure()
     ax = fig.add_subplot(111)
+    ax.tick_params(length=20)
     
     ax.spines['right'].set_color('none')
     ax.spines['left'].set_position('zero')

@@ -5,6 +5,7 @@ from fractions import Fraction
 from decimal import Decimal
 from PIL import Image
 # from untitled8 import calc
+
 def calc(x):
     y = x**2
     # y = 9.1*x-1

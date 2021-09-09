@@ -7,15 +7,20 @@ Created on Mon Aug 30 23:56:45 2021
 
 import cv2, copy, sys, random
 import pytesseract
+import assline
 from PIL import Image
 import numpy as np
 from decimal import Decimal
 from graphene import GaussianElimination, Fraction
 
 file = '2540.png'
-dbtx = 406 # distance between ticks in pixel, x axis.
-dbty = 273 # distance between ticks in pixel, y axis.
-poly_deg = 4
+# dbtx = 406 # distance between ticks in pixel, x axis.
+# dbtx = 204 # distance between ticks in pixel, x axis.
+dbtx = 152 # distance between ticks in pixel, x axis.
+dbty = 69 # distance between ticks in pixel, y axis.
+# dbty = 139 # distance between ticks in pixel, y axis.
+# dbty = 273 # distance between ticks in pixel, y axis.
+poly_deg = 30
 print(f"deg={poly_deg}")
 
 img = cv2.imread(file)
@@ -25,16 +30,10 @@ edges = cv2.Canny(thresh, 50, 190)
 minLineLength = 100
 maxLineGap = 100
 lino = []
-# cv2.imshow("origin", safari)
-# cv2.imshow("thresh", thresh)
-# cv2.imshow("edge", edges)
-# cv2.waitKey()
-# cv2.destroyAllWindows()
-# sys.exit()
-# lines = cv2.HoughLinesP(edges, 1, np.pi/180, 1, minLineLength, maxLineGap).tolist() # top
 lines = cv2.HoughLines(edges, 1, np.pi/360, 200).tolist() # top
-mxsd = 40 # max x scale distance in pixel
-mysd = 40 # max y scale distance in pixel
+mxsd = 60 # max x scale distance in pixel, as in maximu distance of scale lettering from the x axis
+mysd = 60 # max y scale distance in pixel
+
 def conv_ang(ang, mode):
     if mode == 'rad': return ang*180/np.pi
     if mode == 'deg': return ang*np.pi/180
@@ -101,7 +100,6 @@ def process_coord(coord, inclusive=True): # for PIL image processing
 def process_scales(et, axis): # extracted scale, this would have to be sophisticated
     # some gradations might be skipped, currently taking the smallest, sometimes signs are missed too
     splt = [i.rstrip('-') for i in et.split() if i]
-    axis =='y' or print(splt, axis)
     if  len(splt) == 1:
         raise ValueError
     else:
@@ -142,10 +140,10 @@ for x1, y1, x2, y2 in (bottom, left):
         # column = np.array([i for i in range(eff_x-mxsd, eff_x+1)])
         new[rows[:, np.newaxis], column] = image[rows[:, np.newaxis], column]
         new = prepare_image(new)
-        cv2.imshow(f"just us x", new)
+        # cv2.imshow(f"just us x", new)
         # print(f'x-scale = {pytesseract.image_to_string(new, config="--psm 6 digits tessedit_char_whitelist=-+0123456789").strip()}')
-        # scalex = abs(process_scales(pytesseract.image_to_string(new, config="--psm 6 digits tessedit_char_whitelist=-+.0123456789").strip(), "x"))
-        # print(f'x-scale = {scalex}')
+        scalex = abs(process_scales(pytesseract.image_to_string(new, config="--psm 6 digits tessedit_char_whitelist=-+.0123456789").strip(), "x"))
+        print(f'x-scale = {scalex}')
         
     elif enum == 2:
         rows = np.array([i for i in range(image.shape[0])], dtype=np.intp)
@@ -154,7 +152,8 @@ for x1, y1, x2, y2 in (bottom, left):
         new[rows[:, np.newaxis], column] = image[rows[:, np.newaxis], column]
         edgy = cv2.Canny(new, 50, 190)
         new = prepare_image(new)
-        cv2.imshow(f"just us y", new)
+        # cv2.imshow(f"just us y", new)
+        # print(pytesseract.image_to_string(new, config="--psm 4 digits tessedit_char_whitelist=-+.0123456789").strip())
         scaley = abs(process_scales(pytesseract.image_to_string(new, config="--psm 4 digits tessedit_char_whitelist=-+.0123456789").strip(), "y"))
         # the difference between ticks should always be +ve I think
         print(f'y-scale = {scaley}')
@@ -232,10 +231,30 @@ for i in range(len(mat)):
             # print(mat[i][j], str(Decimal(mat[i][j]))) # decimal to remove the e from floats
         mat[i][j] = Fraction(str(Decimal(mat[i][j])))
 ans = GaussianElimination(mat)
-print([eval(str(i)) for i in ans][::-1])
-# jujucrop = juju.crop(process_coord(crop_coord))
-# jujucrop = juju.crop((173, 114, 933, 605))
-# jujucrop.show()
+coeffs = [eval(str(i)) for i in ans][::-1]
+print(coeffs)
 
-cv2.waitKey()
-cv2.destroyAllWindows()
+# for testing only, variables not accessible in production
+
+def catf(): #conv_ans_to_func
+    ps = "" # power string
+    length = len(coeffs)
+    for i in range(len(coeffs)):
+        coeff = coeffs[i]
+        ps += f"{coeff}*x**{length-i-1} + "
+    ps = ps.rstrip("+ ")
+    exec("y = ps")
+    # x = 
+    return eval('y')
+
+rss = 0
+func = catf()
+def calc_rss(): # calculate the residual sum of squares
+    global rss
+    for i in range(len(x_list)):
+        x = (x_list[i])
+        rss += ((y_list[i] - eval(func))**2)
+    return rss
+print()
+print(calc_rss())
+    
