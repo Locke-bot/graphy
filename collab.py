@@ -140,7 +140,7 @@ for x1, y1, x2, y2 in (bottom, left):
         # column = np.array([i for i in range(eff_x-mxsd, eff_x+1)])
         new[rows[:, np.newaxis], column] = image[rows[:, np.newaxis], column]
         new = prepare_image(new)
-        # cv2.imshow(f"just us x", new)
+        cv2.imshow(f"just us x", new)
         # print(f'x-scale = {pytesseract.image_to_string(new, config="--psm 6 digits tessedit_char_whitelist=-+0123456789").strip()}')
         scalex = abs(process_scales(pytesseract.image_to_string(new, config="--psm 6 digits tessedit_char_whitelist=-+.0123456789").strip(), "x"))
         print(f'x-scale = {scalex}')
@@ -152,7 +152,7 @@ for x1, y1, x2, y2 in (bottom, left):
         new[rows[:, np.newaxis], column] = image[rows[:, np.newaxis], column]
         edgy = cv2.Canny(new, 50, 190)
         new = prepare_image(new)
-        # cv2.imshow(f"just us y", new)
+        cv2.imshow(f"just us y", new)
         # print(pytesseract.image_to_string(new, config="--psm 4 digits tessedit_char_whitelist=-+.0123456789").strip())
         scaley = abs(process_scales(pytesseract.image_to_string(new, config="--psm 4 digits tessedit_char_whitelist=-+.0123456789").strip(), "y"))
         # the difference between ticks should always be +ve I think
@@ -251,4 +251,5 @@ def calc_rss(): # calculate the residual sum of squares
     return rss
 print()
 print(calc_rss())
-    
+cv2.waitKey(0)
+cv2.destroyAllWindows()

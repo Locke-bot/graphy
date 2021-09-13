@@ -19,21 +19,17 @@ var ctx = canvas[0].getContext('2d');
 var dropZone = $("#dnd")
 
 function addToCanvas(file){
-        var img = new Image();
+        window.img = new Image();
         img.crossOrigin = 'anonymous';
         frd = new FileReader()
         frd.onload = function(e){
-            console.log(e, e.target, 'reich')
             img.src = e.target.result
-            //$('span.dimension').text(e.target.size)
         }
-        console.log(frd)
         frd.readAsDataURL(file)
         //dropZone.empty()
         //image.appendTo(dropZone)
         
         img.onload = function() {
-            console.log(img, img.width, img.height, $(window).height())
             if ($(document).height > $(window).height()) {
                     dropZone.css('position', 'initial')
                 }
@@ -47,6 +43,14 @@ function addToCanvas(file){
             dropZone.css('width', 'auto')
             dropZone.css('height', 'auto')
         	canvas.removeClass('d-none')
+        	data = ctx.getImageData(0, 0, canvas.width(), canvas.height()).data
+            ajax = $.ajax({
+                type: 'POST',
+                data: {'name': 'array', 'csrfmiddlewaretoken': csrf_token, 'rgb': `${data}`, 'dim': `${canvas.width()}, ${canvas.height()}`},
+                success: function(data){
+                    console.log('success inc', data);
+                }
+            })      	
         };
     }
 
@@ -81,20 +85,4 @@ $("#dnd").on('drop', function(ev) {
   }
   $("#header").removeClass("d-none");
 })
-
-cs.addEventListener('click', function(event) {
-    //let preview = $('span.color-preview')[0]
-    //console.log(preview, 'preview', preview.style.background)
-    data = ctx.getImageData(0, 0, canvas.width(), canvas.height()).data
-    console.log(data, ctx)
-    ajax = $.ajax({
-        type: 'POST',
-        data: {'name': 'array', 'csrfmiddlewaretoken': csrf_token, 'rgb': `${data}`, 'dim': `${canvas.width()}, ${canvas.height()}`},
-        success: function(data){
-            console.log('success inc', data);
-        }
-    })
-    console.log('mabaselo')
-});    
-
 })
