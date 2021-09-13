@@ -1,13 +1,64 @@
 {% extends "base.html" %}
+{% load static %}
+{% block style %}
+    <style>
+        #dnd{
+            width: 300px;
+            height: auto;
+            padding: 10px;
+            border: thin black dashed;
+            border-radius: 10px;
+            background-color: #fdf7fb87;
+            font-size: x-large;
+            text-align: center;
+        }
+        #dnd>div *{
+            display: block;
+        }
+        #file_btn{
+            border-color: skyblue;
+            color: deepskyblue;
+            font-weight: 600;
+            font-size: smaller;
+            padding: 5px;
+            border-radius: 10px;        
+        }
+    </style>
+{% endblock style %}
+
+{% block script  %}
+    <script type="text/javascript" src={% static "js/home2.js" %}></script>
+{% endblock script  %}
+
 {% block content %}
-  <header id="header" class="fixed-top d-flex align-items-center header-scrolled">
-    <div class="container d-flex align-items-center">
-      <h1 class="logo me-auto"><a href="index.html">Graphy</a></h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+  <div id="header" class="align-items-center header-scrolled">
+    <div class="d-flex align-items-center">
+      <div class="logo" id="title">Graphy</div><div class="logo">|</div>
+      <!-- a cm rep b units -->
+      <div id="xscale">x-axis: <input size="5"> 
+          <select id="lxunit" required> <!-- length unit-->
+            <option label=" "></option>
+            <option>pixel (px)</option>
+            <option>centimetre (cm)</option>
+            <option>point (pt)</option>
+            <option>inch (in)</option>
+         </select>
+         represents <input size="5"> units
+     </div>
+     <div class="logo">|</div>
+     <div id="yscale">y-axis: <input size="5"> 
+         <select id="lyunit" required> <!-- length unit-->
+           <option label=" "></option>
+           <option>pixel (px)</option>
+           <option>centimetre (cm)</option>
+           <option>point (pt)</option>
+           <option>inch (in)</option>
+        </select>
+        represents <input size="7"> units
     </div>
-  </header>
-  <div class="carousel-item" style="background-image: url(assets/img/slide/slide-2.jpg)">
+   </div>
+  </div>
+  <!--<div class="carousel-item" style="background-image: url(assets/img/slide/slide-2.jpg)">
     <div class="carousel-container">
       <div class="container">
         <h2 class="animate__animated animate__fadeInDown">Lorem Ipsum Dolor</h2>
@@ -15,5 +66,19 @@
         <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
       </div>
     </div>
-   </div>  
+   </div>-->
+   
+<div style="display: flex;justify-content: center;margin: 5px;">   
+   <div>
+        <div id="dnd">
+           <canvas id="canvas" class="d-none"></canvas>        
+           <img src={% static "upload.png" %} id="upload_img"><br>
+           <label for="upload_img" style="font-family: cursive;">Drag&Drop images here</label>
+           <div>
+               <p style="font-family: monospace;">or</p>
+               <button id="file_btn" style="display: inline;">Browse Files</button>
+           </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

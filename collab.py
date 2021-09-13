@@ -5,7 +5,7 @@ Created on Mon Aug 30 23:56:45 2021
 @author: Unrated
 """
 
-import cv2, copy, sys, random
+import cv2, sys, random
 import pytesseract
 import assline
 from PIL import Image
@@ -13,17 +13,17 @@ import numpy as np
 from decimal import Decimal
 from graphene import GaussianElimination, Fraction
 
-file = '2540.png'
-# dbtx = 406 # distance between ticks in pixel, x axis.
-# dbtx = 204 # distance between ticks in pixel, x axis.
+# constants, dbtx, dbty, poly_deg, scalex, scaley
+
 dbtx = 152 # distance between ticks in pixel, x axis.
 dbty = 69 # distance between ticks in pixel, y axis.
-# dbty = 139 # distance between ticks in pixel, y axis.
-# dbty = 273 # distance between ticks in pixel, y axis.
 poly_deg = 30
 print(f"deg={poly_deg}")
 
+file = '2540.png'
+
 img = cv2.imread(file)
+
 safari = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 flag, thresh = cv2.threshold(safari, 0, 255, 16)
 edges = cv2.Canny(thresh, 50, 190)
@@ -164,7 +164,7 @@ for x1, y1, x2, y2 in (bottom, left):
 # cv2.destroyAllWindows()
 # sys.exit()
 # scaley = scaley*10**6
-scalex = 2
+# scalex = 2
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 lower_blue = np.array([100, 150, 150], dtype="float64")
 upper_blue = np.array([255, 255, 255], dtype="float64")
@@ -194,10 +194,6 @@ xappend = coords[0].append
 yappend = coords[1].append
 
 count = 0
-new = True
-# cv2.imshow('resin', res)
-# cv2.imshow('hsv', hsv)
-
 for j in range(len(x)):
     for i in range(len(x[0])):
         if res[j][i][0] > 10:
@@ -227,9 +223,7 @@ def reg(): # this gives a poly_deg+1 square matrix
 reg()
 for i in range(len(mat)):
     for j in range(len(mat[i])):
-            # mat[i][j] = str(mat[i][j])
-            # print(mat[i][j], str(Decimal(mat[i][j]))) # decimal to remove the e from floats
-        mat[i][j] = Fraction(str(Decimal(mat[i][j])))
+        mat[i][j] = Fraction(str(Decimal(mat[i][j]))) # decimal to remove the e from floats
 ans = GaussianElimination(mat)
 coeffs = [eval(str(i)) for i in ans][::-1]
 print(coeffs)
