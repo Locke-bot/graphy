@@ -21,7 +21,16 @@
             font-weight: 600;
             font-size: smaller;
             padding: 5px;
-            border-radius: 10px;        
+            border-radius: 10px;      
+        }
+        #xscale, #yscale {
+            margin: 3px 0;
+        }
+        #get-scale, #get-eqn {
+            margin-left: 5px;
+            color: blue;
+            border: thin blue solid;
+            border-radius: 3px;            
         }
     </style>
 {% endblock style %}
@@ -31,30 +40,35 @@
 {% endblock script  %}
 
 {% block content %}
-  <div id="header" class="align-items-center header-scrolled d-none">
-    <div class="d-flex align-items-center">
-      <div class="logo" id="title">Graphy</div><div class="logo">|</div>
+  <div id="header" class="align-items-center header-scrolled" style="background-color: lightgray;">
+    <div class="d-flex align-items-center justify-content-between" style="margin: 0 30px;">
+      <div class="logo" id="title">Graphy</div>
       <!-- a cm rep b units -->
-      <div id="xscale">x-axis: <input size="5"> 
-          <select id="lxunit" required> <!-- length unit-->
-            <option label=" "></option>
-            <option>pixel (px)</option>
-            <option>centimetre (cm)</option>
-            <option>point (pt)</option>
-            <option>inch (in)</option>
-         </select>
-         represents <input size="5"> units
-     </div>
-     <div class="logo">|</div>
-     <div id="yscale">y-axis: <input size="5"> 
-         <select id="lyunit" required> <!-- length unit-->
-           <option label=" "></option>
-           <option>pixel (px)</option>
-           <option>centimetre (cm)</option>
-           <option>point (pt)</option>
-           <option>inch (in)</option>
-        </select>
-        represents <input size="7"> units
+      <div class="d-none">
+          <form id="xscale">x-axis: <input size="5"> 
+              <select id="lxunit" required> <!-- length unit-->
+                <option label=" "></option>
+                <option>pixel (px)</option>
+                <option>centimetre (cm)</option>
+                <option>point (pt)</option>
+                <option>inch (in)</option>
+             </select>
+             represents <input size="5" id="xunit"> units
+         </form>
+         <form id="yscale">y-axis: <input size="5"> 
+             <select id="lyunit" required> <!-- length unit-->
+               <option label=" "></option>
+               <option>pixel (px)</option>
+               <option>centimetre (cm)</option>
+               <option>point (pt)</option>
+               <option>inch (in)</option>
+            </select>
+            represents <input size="5" id="yunit"> units
+        </form>
+        <div style="justify-content: flex-end; display: flex;">
+            <button id="get-scale">get scale</button>
+            <button id="get-eqn">get equation</button>
+        </div>
     </div>
    </div>
   </div>
@@ -68,7 +82,7 @@
     </div>
    </div>-->
    
-<div style="display: flex;justify-content: center;margin: 5px;">   
+<div style="display: flex;justify-content: center;margin: 30px 0;">   
    <div>
         <div id="dnd">
            <canvas id="canvas" class="d-none"></canvas>        

@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
+
 INSTALLED_APPS = [
     'graphite',
     'django.contrib.admin',

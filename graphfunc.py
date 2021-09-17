@@ -15,15 +15,14 @@ from graphene import GaussianElimination, Fraction
 
 # constants, dbtx, dbty, poly_deg, scalex, scaley
 
-dbtx = 152 # distance between ticks in pixel, x axis.
-dbty = 69 # distance between ticks in pixel, y axis.
-poly_deg = 30
+# the below must also be user given, until I consider otherwise
+
+# dbtx distance between ticks in pixel, x axis.
+# dbty distance between ticks in pixel, y axis.
+poly_deg = 4
 print(f"deg={poly_deg}")
 
-file = '2540.png'
-
-img = cv2.imread(file)
-
+# img is a numpy array of the bgr format
 def prep(img):
     safari = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     flag, thresh = cv2.threshold(safari, 0, 255, 16)
@@ -32,8 +31,6 @@ def prep(img):
     maxLineGap = 100
     lino = []
     lines = cv2.HoughLines(edges, 1, np.pi/360, 200).tolist() # top
-    mxsd = 60 # max x scale distance in pixel, as in maximum distance of scale lettering from the x axis
-    mysd = 60 # max y scale distance in pixel
     
     def conv_ang(ang, mode):
         if mode == 'rad': return ang*180/np.pi
@@ -95,7 +92,11 @@ def prep(img):
                 bottom = line
     return safari, left, bottom
 
-def getscale(safari, left, bottom):
+def getscale(img, safari, left, bottom):
+    # extracts the scale, or at least, tries to ;)
+    mxsd = 60 # max x scale distance in pixel, as in maximum distance of scale lettering from the x axis
+    mysd = 60 # max y scale distance in pixel    
+    
     def process_coord(coord, inclusive=True): # for PIL image processing
         new_tup = (coord[0]-inclusive, coord[3]-inclusive, coord[2]+inclusive, coord[1]+inclusive)
         return new_tup
@@ -164,7 +165,7 @@ def getscale(safari, left, bottom):
         enum += 1    
     return scalex, scaley
 
-def getfunc(scalex, scaley):
+def getfunc(img, left, bottom, scalex, scaley, dbtx, dbty): # this is the main function, the rest are helper functions
     
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([100, 150, 150], dtype="float64")
@@ -185,7 +186,6 @@ def getfunc(scalex, scaley):
     crop_coord = (min(tit, key=lambda _: _[0])[0], min(tit, key=lambda _: _[1])[1], max(tit, key=lambda _: _[0])[0], max(tit, key=lambda _: _[1])[1])
     print(crop_coord)
     
-    juju = Image.open(file)
     maxx = scalex*(crop_coord[2] - left[0])/dbtx
     maxy = scaley*(bottom[1] - crop_coord[1])/dbty
     print(maxx, maxy, 'maxi')
@@ -252,5 +252,15 @@ def getfunc(scalex, scaley):
     #         rss += ((y_list[i] - eval(func))**2)
     #     return rss
     # print(calc_rss())
-
-getfunc(img, dbtx, dbty, poly_deg)
+if __name__ == '__main__':
+    file = '2540.png'
+    img = cv2.imread(file)    
+    
+    dbtx = 152 # distance between ticks in pixel, x axis.
+    dbty = 69 # distance between ticks in pixel, y axis.    
+    
+    safari, left, bottom = prep(img)
+    scalex, scaley = getscale(img, safari, left, bottom)
+    # getfunc(img, dbtx, dbty, poly_deg)
+    print(getfunc(img, left, bottom, scalex, scaley, dbtx, dbty))
+    print(left, bottom, scalex, scaley, dbtx, dbty)
