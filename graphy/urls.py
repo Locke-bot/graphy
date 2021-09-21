@@ -20,4 +20,5 @@ import graphite.views as graview
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', graview.HomeView),
+    path('test', graview.TestView),
 ]

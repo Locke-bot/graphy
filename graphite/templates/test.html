@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+    <style>
+        #dnd{
+            width: 300px;
+            height: auto;
+            padding: 10px;
+            border: thin black dashed;
+            border-radius: 10px;
+            /*background-color: #fdf7fb87;*/
+            background-color: red;
+            font-size: x-large;
+            text-align: center;
+        }
+        #dnd>div *{
+            display: block;
+        }
+        #file_btn{
+            border-color: skyblue;
+            color: deepskyblue;
+            font-weight: 600;
+            font-size: smaller;
+            padding: 5px;
+            border-radius: 10px;      
+        }
+        #xscale, #yscale {
+            margin: 3px 0;
+        }
+        #get-scale, #get-eqn {
+            margin-left: 5px;
+            color: blue;
+            border: thin blue solid;
+            border-radius: 3px;            
+        }
+    </style>
+{% endblock style %}
+
+{% block script  %}
+    <script type="text/javascript" src={% static "js/test.js" %}></script>
+{% endblock script  %}
+
+{% block content %}   
+<div style="display: flex;justify-content: center;margin: 30px 0;">   
+   <div>
+        <div id="dnd">
+           <canvas id="canvas" class="d-none"></canvas>        
+           <img src={% static "upload.png" %} id="upload_img"><br>
+           <label for="upload_img" style="font-family: cursive;">Drag&Drop images here</label>
+           <div>
+               <p style="font-family: monospace;">or</p>
+               <button id="file_btn" style="display: inline;">Browse Files</button>
+           </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

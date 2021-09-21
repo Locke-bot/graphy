@@ -71,7 +71,12 @@ def HomeView(request):
             dbtx, dbty = post['dbtx'][0:-2], post['dbty'][0:-2]
             dbtx, dbty = int(dbtx), int(dbty)
             print(dbtx, dbty, left, bottom, scalex, scaley)
+            
             # print(post['dbtx'], post['dbty'], type(post['dbty']))
             res = gp.getfunc(data, left, bottom, scalex, scaley, dbtx, dbty)
             return JsonResponse({'result': res})
+    return render(request, template_name)
+
+def TestView(request):
+    template_name = 'test.html'
     return render(request, template_name)

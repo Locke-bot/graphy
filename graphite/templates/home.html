@@ -8,7 +8,8 @@
             padding: 10px;
             border: thin black dashed;
             border-radius: 10px;
-            background-color: #fdf7fb87;
+            /*background-color: #fdf7fb87;*/
+            background-color: red;
             font-size: x-large;
             text-align: center;
         }
@@ -43,6 +44,15 @@
   <div id="header" class="align-items-center header-scrolled" style="background-color: lightgray;">
     <div class="d-flex align-items-center justify-content-between" style="margin: 0 30px;">
       <div class="logo" id="title">Graphy</div>
+      <div>length: <input size="5">&nbsp;&nbsp;
+            <select id="unit" required> <!-- length unit-->
+               <option label=" "></option>
+               <option>pixel (px)</option>
+               <option>centimetre (cm)</option>
+               <option>point (pt)</option>
+               <option>inch (in)</option>
+            </select>
+      </div>
       <!-- a cm rep b units -->
       <div class="d-none">
           <form id="xscale">x-axis: <input size="5"> 
