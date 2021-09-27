@@ -13,11 +13,9 @@ $("#dnd").on('dragover', function (ev) {
 })
 
 var points = []
-var canvas = $('#canvas');
-var canvasClone = $("<canvas/>", {"id": "canvas2"})
-var cs = canvas[0]
-var ctx = canvas[0].getContext('2d');
-var ctx2 = canvasClone[0].getContext('2d')
+//var canvas = $('#canvas');
+//var cs = canvas[0]
+//var ctx = canvas[0].getContext('2d');
 var dropZone = $("#dnd")
 var dis = 2 // distance from centre
 
@@ -31,23 +29,16 @@ function addToCanvas(file){
         frd.readAsDataURL(file)
         //dropZone.empty()
         //image.appendTo(dropZone)
-        
-        img.onload = function() {
+        img.onload = function(){
             if ($(document).height > $(window).height()) {
                     dropZone.css('position', 'initial')
                 }
-            cs.width=img.width
-            cs.height=img.height
+            //var paper = new Raphael("canvas", img.width, img.height);
+            var paper = new Raphael("canvas", img.width, img.height);
+            var image = paper.image(img.src, 0, 0, img.width, img.height)
             dropZone.children().splice(1,).forEach(e=>e.remove())
-            /*dropZone.remove('p')
-            $('p.drop-text').remove()
-            $('#file-button').parent().remove()*/
-        	ctx.drawImage(img, 0, 0);
-        	ctx2.drawImage(img, 0, 0)
             dropZone.css('width', 'auto')
             dropZone.css('height', 'auto')
-        	canvas.removeClass('d-none')
-        	window.data = ctx.getImageData(0, 0, canvas.width(), canvas.height()).data
         };
     }
 
@@ -115,7 +106,7 @@ $("#dnd").on('drop', function(ev) {
       console.log("clearing", x-dis, y-dis, x+dis, y+dis)
   }
 
-  canvas.on('click', function(ev){
+  /*canvas.on('click', function(ev){
           let oe = ev.originalEvent
           let x = oe.layerX
           let y = oe.layerY
@@ -151,5 +142,5 @@ $("#dnd").on('drop', function(ev) {
           if (points.length > 1){
               connectPoint(points[0], points[1])
           }
-  })
+  })*/
 })

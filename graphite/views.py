@@ -8,6 +8,7 @@ import graphfunc as gp
 # Create your views here.
 prep_done = False
 data, scalex, scaley, left, bottom, response = [None]*6
+
 def HomeView(request):
     global data, scalex, scaley, left, bottom, prep_done, response
     template_name = 'home.html'
@@ -78,5 +79,5 @@ def HomeView(request):
     return render(request, template_name)
 
 def TestView(request):
-    template_name = 'test.html'
+    template_name = "test.html"
     return render(request, template_name)
