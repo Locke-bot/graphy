@@ -18,6 +18,9 @@ var points = []
 //var ctx = canvas[0].getContext('2d');
 var dropZone = $("#dnd")
 var dis = 2 // distance from centre
+var dotArray = []
+var pathArray = []
+var lineArray = []
 
 function addToCanvas(file){
         img = new Image();
@@ -35,12 +38,59 @@ function addToCanvas(file){
                 }
             //var paper = new Raphael("canvas", img.width, img.height);
             var paper = new Raphael("canvas", img.width, img.height);
+            console.log(paper)
             var image = paper.image(img.src, 0, 0, img.width, img.height)
+            image.click(function(ev){
+                let x = ev.layerX
+                let y = ev.layerY
+                //M10,10m-2,-2l4,4m0,-4l-4,4
+                let path = paper.path(
+                    Raphael.format(
+                        "M{0} {1} m {2} {3} l {4} {5} m {6} {7} l {8} {9}",
+                        x, y, -dis, -dis, 2*dis, 2*dis, 0, -2*dis, -2*dis, 2*dis
+                    )
+                );
+                console.log(path)
+                let svg_c = $("svg").children(); // all svg children
+                $(svg_c[svg_c.length-1]).addClass("dot");
+                let svg_d = $("path.dot").toArray();
+                if (pathArray.length > 1){
+                    pathArray.shift().remove();
+                }
+                pathArray.push(path);
+                dotArray.unshift([x, y]);
+                console.log(svg_d, "swag");
+                if (dotArray.length > 1){
+                    if (lineArray.length){
+                        console.log(lineArray);
+                        lineArray.shift().remove();
+                        console.log("modebi");
+                    }
+                    //let point1 = dotArray[0].attrs.path[0].splice(1,), point2 = dotArray[1].attrs.path[0].splice(1,)
+                    //connectPoints(paper, point1, point2)
+                    connectPoints(paper, dotArray[0], dotArray[1]);
+                    let svg_c = $("svg").children(); // all svg children
+                    $(svg_c[svg_c.length-1]).addClass("line");
+                }
+            })
             dropZone.children().splice(1,).forEach(e=>e.remove())
             dropZone.css('width', 'auto')
             dropZone.css('height', 'auto')
         };
     }
+
+  function connectPoints(paper, a, b){
+        let x1=a[0], y1=a[1], x2=b[0], y2=b[1];
+        let path = paper.path(
+            Raphael.format(
+                "M{0} {1}  L {2} {3}",
+                x1, y1, x2, y2
+            )
+        );
+        lineArray.unshift(path);
+        let length = ((x1-x2)**2 + (y1-y2)**2)**0.5;
+        console.log(`distance = ${length}`);     
+  }
 
 $("#dnd").on('drop', function(ev) {
   ev = ev.originalEvent
@@ -71,18 +121,6 @@ $("#dnd").on('drop', function(ev) {
     }
   }
   })
-
-  function connectPoint(a, b){
-      console.log('connecting...')
-      let path = new Path2D
-      path.moveTo(a[0], a[1])
-      path.lineTo(b[0], b[1])
-      ctx.stroke(path)
-      //let rest = points.splice(2,)
-      //for (let point of rest){
-           //removePoint(point)
-      //}
-  }
      
   function removeLine(point){
       //console.log(point, 'pointt', point[3], point[4], point[5].width, point[5].height)
